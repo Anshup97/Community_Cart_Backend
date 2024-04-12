@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+        routes:
+          - id: employee-service
+            uri: lb://employee-service
+            predicates:
+              - Path=/employee/**
+          - id: department-service
+            uri: lb://department-service
+            predicates:
+              - Path=/department/**
+          - id: auth-service
+            uri: lb://auth-service
+            predicates:
+              - Path=/auth/**
+          - id: product-service
+            uri: lb://product-service
+            predicates:
+              - Path=/seller/**
+          - id: product-service
+            uri: lb://product-service
+            predicates:
+              - Path=/product/**
+          - id: product-service
+            uri: lb://product-service
+            predicates:
+              - Path=/category/**
+          - id: email-service
+            uri: lb://email-service
+            predicates:
+              - Path=/email/**
+          - id: order-service
+            uri: lb://order-service
+            predicates:
+              - Path=/order/**
+          - id: order-service
+            uri: lb://order-service
+            predicates:
+              - Path=/bookmark/**
+          - id: order-service
+            uri: lb://order-service
+            predicates:
+              - Path=/cart/**
+          - id: order-service
+            uri: lb://order-service
+            predicates:
+              - Path=/customer/**
+  config:
+    import: "optional:configserver:http://localhost:8088"
+server:
+  port: 8060
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+management:
+  tracing:
+    sampling:
+      probability: 0.1

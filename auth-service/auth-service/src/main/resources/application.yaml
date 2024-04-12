@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: auth-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/authenticationdb
+    username: root
+    password: Ans+pan8955
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 8081
