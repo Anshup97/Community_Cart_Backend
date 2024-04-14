@@ -19,9 +19,7 @@ public class CartItem {
     allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "cart_item_sequence")
     private Long cartItemId;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "productId", referencedColumnName = "productId")
-    private Product product;
+    private Long productId;
     private Long quantity;
     private Long cartId;
 }

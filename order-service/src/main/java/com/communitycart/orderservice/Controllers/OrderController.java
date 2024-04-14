@@ -10,6 +10,7 @@ import com.stripe.model.checkout.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -49,6 +50,7 @@ public class OrderController {
      * @return
      */
     @PostMapping("/placeOrder")
+    @Transactional
     public ResponseEntity<?> placeOrder(@RequestBody CreateOrderDTO createOrderDTO){
         OrderDTO order = service.placeOrder(createOrderDTO.getCustomerId(), createOrderDTO.getPaymentMethod(),
                 createOrderDTO.getSessionId());

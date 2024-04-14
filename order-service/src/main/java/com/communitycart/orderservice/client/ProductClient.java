@@ -2,9 +2,7 @@ package com.communitycart.orderservice.client;
 
 import com.communitycart.orderservice.dtos.ProductDTO;
 import com.communitycart.orderservice.dtos.SellerDTO;
-import com.communitycart.orderservice.entity.Product;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.communitycart.orderservice.dtos.Product;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
@@ -20,10 +18,10 @@ public interface ProductClient {
     List<ProductDTO> getProductListById(@RequestBody List<Long> productIds);
 
     @GetExchange("/product/getProduct")
-    ProductDTO getProductById(@RequestParam Long productId);
+    Product getProductById(@RequestParam Long productId);
 
     @PutExchange("/product/updateProductQuantity")
-    ProductDTO updateProductQuantity(@RequestParam Long productId, @RequestParam Long productQuantity);
+    Product updateProductQuantity(@RequestParam Long productId, @RequestParam Long productQuantity);
 
     @GetExchange("/seller/getSeller")
     List<SellerDTO> getSeller(@RequestParam(name = "sellerId", required = false) Long sellerId);

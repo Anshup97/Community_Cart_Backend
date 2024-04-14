@@ -20,11 +20,14 @@
         <option value="$PROJECT_DIR$/../email-service/pom.xml" />
         <option value="$PROJECT_DIR$/order-service/pom.xml" />
         <option value="$PROJECT_DIR$/email-service/pom.xml" />
+        <option value="$PROJECT_DIR$/review-service/pom.xml" />
+        <option value="$USER_HOME$/Downloads/review-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$USER_HOME$/Downloads/auth-service/auth-service/pom.xml" />
+        <option value="$USER_HOME$/Downloads/review-service/pom.xml" />
         <option value="$USER_HOME$/OneDrive/Desktop/api-gateway/pom.xml" />
       </set>
     </option>

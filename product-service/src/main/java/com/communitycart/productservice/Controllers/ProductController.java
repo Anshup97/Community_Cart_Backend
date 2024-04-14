@@ -2,15 +2,9 @@ package com.communitycart.productservice.Controllers;
 
 import com.communitycart.productservice.dtos.ProductDTO;
 import com.communitycart.productservice.dtos.ProductOutOfStock;
-import com.communitycart.productservice.dtos.ReviewDTO;
 import com.communitycart.productservice.entity.Product;
 import com.communitycart.productservice.repository.ProductRepository;
 import com.communitycart.productservice.service.ProductService;
-import com.communitycart.productservice.dtos.ProductDTO;
-import com.communitycart.productservice.entity.Product;
-import com.communitycart.productservice.repository.ProductRepository;
-import com.communitycart.productservice.service.ProductService;
-import com.communitycart.productservice.service.ReviewService;
 import com.communitycart.productservice.service.SellerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +34,6 @@ public class ProductController {
 
     @Autowired
     private SellerService sellerService;
-
-    @Autowired
-    private ReviewService reviewService;
 
     @GetMapping("/")
     public String greeting() {
@@ -110,7 +101,7 @@ public class ProductController {
      */
     @GetMapping("/getProduct")
     public ResponseEntity<?> getProductByProductId(@RequestParam Long productId){
-        ProductDTO productDTO = productService.getProduct(productId);
+        Product productDTO = productService.getProduct(productId);
         if(productDTO == null){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
@@ -155,49 +146,10 @@ public class ProductController {
         return new ResponseEntity<>(productDTOS, HttpStatus.OK);
     }
 
-    /*
-    Add customer reviews for a product.
-    If a customer has already reviewed, update that review.
-     */
-    @PostMapping("/postReview")
-    public ResponseEntity<?> postReview(@RequestBody ReviewDTO review){
-        ReviewDTO rev = reviewService.postReview(review);
-        return new ResponseEntity<>(rev, HttpStatus.OK);
-    }
-
-    /*
-    Get all the reviews for a product using productId.
-     */
-    @GetMapping("/getReviews")
-    public ResponseEntity<?> getReviews(@RequestParam Long productId){
-        return ResponseEntity.ok(reviewService.getReviews(productId));
-    }
-
-    /*
-    Get a review using reviewId.
-     */
-    @GetMapping("/getReview")
-    public ResponseEntity<?> getReview(@RequestParam Long reviewId){
-        return ResponseEntity.ok(reviewService.getReview(reviewId));
-    }
-
-    /*
-    Delete a review using reviewId.
-     */
-    @DeleteMapping("/deleteReview")
-    public ResponseEntity<?> deleteReview(@RequestParam Long reviewId){
-        reviewService.deleteReview(reviewId);
+    @PostMapping("/updateRating")
+    public ResponseEntity<?> updateRating(@RequestParam Long productId, @RequestParam Double rating) {
+        productService.updateRating(productId, rating);
         return ResponseEntity.ok(null);
-    }
-
-    /*
-    Check if a customer is eligible to review a product.
-    If the customer has purchased a product, then only the
-    customer is eligible to review that product.
-     */
-    @GetMapping("/canReview")
-    public ResponseEntity<?> canReview(@RequestParam Long customerId, @RequestParam Long productId){
-        return ResponseEntity.ok(reviewService.canReview(customerId, productId));
     }
 
     /*

@@ -10,6 +10,7 @@
         <module name="config-server" />
         <module name="auth-service" />
         <module name="customer-service" />
+        <module name="review-service" />
         <module name="email-service" />
         <module name="api-gateway" />
         <module name="product-service" />
@@ -20,6 +21,8 @@
     <bytecodeTargetLevel>
       <module name="department-service" target="17" />
       <module name="employee-service" target="17" />
+      <module name="review-service (1)" target="17" />
+      <module name="review-service (2)" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -33,6 +36,9 @@
       <module name="employee-service" options="-parameters" />
       <module name="order-service" options="-parameters" />
       <module name="product-service" options="-parameters" />
+      <module name="review-service" options="-parameters" />
+      <module name="review-service (1)" options="-parameters" />
+      <module name="review-service (2)" options="-parameters" />
       <module name="service-registry" options="-parameters" />
     </option>
   </component>

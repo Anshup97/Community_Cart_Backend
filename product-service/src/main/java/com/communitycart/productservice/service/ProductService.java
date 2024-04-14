@@ -88,9 +88,10 @@ public class ProductService {
      * @param productId
      * @return
      */
-    public ProductDTO getProduct(Long productId) {
+    public Product getProduct(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
-        return product.map(value -> new ModelMapper().map(value, ProductDTO.class)).orElse(null);
+//        return product.map(value -> new ModelMapper().map(value, ProductDTO.class)).orElse(null);
+        return product.orElse(null);
     }
 
     /**
@@ -129,20 +130,10 @@ public class ProductService {
      * to update the rating of the product.
      * @param productId
      */
-    public void updateRating(Long productId){
+    public void updateRating(Long productId, Double rating){
         Product product = productRepository.findProductByProductId(productId);
         if(product != null){
-            List<Review> reviews = reviewRepository.findByProductId(productId);
-            if(!reviews.isEmpty()){
-                Integer ratings = 0;
-                for(Review r: reviews){
-                    ratings += r.getRating();
-                }
-                Double productRating = (double) (ratings / reviews.size());
-                product.setRating(productRating);
-            } else {
-                product.setRating(0D);
-            }
+            product.setRating(rating);
             productRepository.save(product);
         }
     }
@@ -174,12 +165,11 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public ProductDTO updateProductQuantity(Long productId, Long productQuantity) {
+    public Product updateProductQuantity(Long productId, Long productQuantity) {
         Product product = productRepository.findProductByProductId(productId);
         if(product != null) {
             product.setProductQuantity(productQuantity);
-            Product updatedProduct = productRepository.save(product);
-            return new ModelMapper().map(updatedProduct, ProductDTO.class);
+            return productRepository.save(product);
         }
         return null;
     }

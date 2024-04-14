@@ -37,6 +37,4 @@ public class Address {
     @OneToOne(mappedBy = "address")
     private Customer customer;
 
-    @OneToOne(mappedBy = "shippingAddress")
-    private Order order;
 }

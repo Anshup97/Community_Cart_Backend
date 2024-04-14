@@ -1,4 +1,4 @@
-package com.communitycart.orderservice.entity;
+package com.communitycart.orderservice.dtos;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,19 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
-@Table(name = "Products")
 public class Product {
-    @Id
-    @SequenceGenerator(
-            name = "product_sequence",
-            sequenceName = "product_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.AUTO,
-            generator = "product_sequence"
-    )
     private Long productId;
     private String productName;
     private Double productPrice;

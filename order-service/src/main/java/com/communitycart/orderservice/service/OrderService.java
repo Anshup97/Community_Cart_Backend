@@ -10,10 +10,12 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -67,9 +69,14 @@ public class OrderService {
         return emailDTO;
     }
 
+    public void further() {
+
+    }
+
     //Custom entity to dto mapping method.
     public OrderDTO customMap(Order order){
         OrderDTO dto = new OrderDTO();
+        Customer customer = customerRepository.findByCustomerId(order.getCustomerId());
         dto.setOrderId(order.getOrderId());
         dto.setCustomerId(order.getCustomerId());
         dto.setSellerId(order.getSellerId());
@@ -81,10 +88,21 @@ public class OrderService {
         dto.setDeliveryDate(order.getDeliveryDate());
         dto.setDeliveredAt(order.getDeliveredAt());
         dto.setStatus(order.getStatus());
-        dto.setItems(order.getItems().stream()
-                .map(i -> new ModelMapper().map(i, OrderItemDTO.class))
-                .collect(Collectors.toList()));
-        dto.setShippingAddress(mapper().map(order.getShippingAddress(), AddressDTO.class));
+        List<OrderItemDTO> items = new ArrayList<>();
+        List<Long> productsIds = order.getItems().stream()
+                        .map(OrderItem::getProductId)
+                                .toList();
+        List<ProductDTO> prods = productClient.getProductListById(productsIds);
+        for(OrderItem orderItem: order.getItems()) {
+            OrderItemDTO dto1 = new ModelMapper().map(orderItem, OrderItemDTO.class);
+            ProductDTO pr = prods.stream()
+                    .filter(p -> p.getProductId().equals(orderItem.getProductId()))
+                    .findFirst().get();
+            dto1.setProduct(pr);
+            items.add(dto1);
+        }
+        dto.setItems(items);
+        dto.setShippingAddress(mapper().map(customer.getAddress(), AddressDTO.class));
         if(!order.getPaymentMethod().equalsIgnoreCase("COD")){
             dto.setSessionId(order.getSessionId());
         }
@@ -100,6 +118,9 @@ public class OrderService {
      * @param sessionId
      * @return
      */
+    public Order saveOrder(Order order) {
+        return orderRepository.save(order);
+    }
     public OrderDTO placeOrder(Long customerId, String paymentMethod, String sessionId) {
         Customer customer = customerRepository.findByCustomerId(customerId);
         if(customer == null){
@@ -112,7 +133,7 @@ public class OrderService {
         }
         Map<Long, List<CartItem>> orderMap = new HashMap<>();
         for(CartItem cartItem: items){
-            Long sellerId = cartItem.getProduct().getSellerId();
+            Long sellerId = productClient.getProductById(cartItem.getProductId()).getSellerId();
             if(!orderMap.containsKey(sellerId)){
                 List<CartItem> cartItems = new ArrayList<>();
                 cartItems.add(cartItem);
@@ -129,14 +150,14 @@ public class OrderService {
             List<OrderItem> orderItems = new ArrayList<>();
             double totalPrice = 0D;
             for(CartItem item: cartItems){
-                ProductDTO p = productClient.getProductById(item.getProduct().getProductId());
+                Product p = productClient.getProductById(item.getProductId());
                 if(item.getQuantity() > p.getProductQuantity()){
                     return null;
                 }
                 OrderItem orderItem = new OrderItem();
-                orderItem.setProduct(item.getProduct());
+                orderItem.setProductId(item.getProductId());
                 orderItem.setQuantity(item.getQuantity());
-                orderItem.setItemPrice(item.getProduct().getProductPrice());
+                orderItem.setItemPrice(p.getProductPrice());
                 double tot = orderItem.getItemPrice() * item.getQuantity();
                 totalPrice += tot;
                 orderItem.setTotalPrice(tot);
@@ -160,8 +181,9 @@ public class OrderService {
             order.setCreatedAt(new Date());
             order.setStatus("Placed");
             order.setItems(orderItems);
-            order.setShippingAddress(customer.getAddress());
-            Order savedOrder = orderRepository.save(order);
+//            order.setShippingAddress(customer.getAddress());
+            order.setAddressId(customer.getAddress().getAddressId());
+            Order savedOrder = saveOrder(order);
             cartService.deleteFromCart(customerId, null);
             emailClient.sendHtmlEmail(emailDTOMapper(savedOrder));
             return customMap(savedOrder);
@@ -258,13 +280,14 @@ public class OrderService {
      * @return
      */
     private SessionCreateParams.LineItem.PriceData createPriceData(CartItem ci) {
-        double price = ci.getProduct().getProductPrice();
+        Product p = productClient.getProductById(ci.getProductId());
+        double price = p.getProductPrice();
         return SessionCreateParams.LineItem.PriceData.builder()
                 .setCurrency("inr")
                 .setUnitAmount((long)price * 100)
                 .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                        .setName(ci.getProduct().getProductName())
-                        .setDescription(ci.getProduct().getProductDescription())
+                        .setName(p.getProductName())
+                        .setDescription(p.getProductDescription())
                         .build())
                 .build();
     }
@@ -336,8 +359,7 @@ public class OrderService {
         }
         List<OrderItem> items = order.getItems();
         for(OrderItem item: items){
-            Product p = item.getProduct();
-            ProductDTO product = productClient.getProductById(p.getProductId());
+            Product product = productClient.getProductById(item.getProductId());
             productClient.updateProductQuantity(product.getProductId(),
                     product.getProductQuantity() + item.getQuantity());
         }
@@ -352,7 +374,7 @@ public class OrderService {
     public Boolean canReview(Long customerId, Long productId) {
         List<Order> orders = orderRepository.findByCustomerId(customerId);
         for(Order order: orders) {
-            if(order.getItems().stream().anyMatch(x -> x.getProduct().getProductId().equals(productId))){
+            if(order.getItems().stream().anyMatch(x -> x.getProductId().equals(productId))){
                 return true;
             }
         }

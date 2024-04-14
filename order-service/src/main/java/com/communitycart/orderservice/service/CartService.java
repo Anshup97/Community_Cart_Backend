@@ -6,7 +6,7 @@ import com.communitycart.orderservice.dtos.CartItemDTO;
 import com.communitycart.orderservice.entity.Cart;
 import com.communitycart.orderservice.entity.CartItem;
 import com.communitycart.orderservice.entity.Customer;
-import com.communitycart.orderservice.entity.Product;
+import com.communitycart.orderservice.dtos.Product;
 import com.communitycart.orderservice.repository.CartItemRepository;
 import com.communitycart.orderservice.repository.CartRepository;
 import com.communitycart.orderservice.repository.CustomerRepository;
@@ -81,12 +81,12 @@ public class CartService {
             items = new ArrayList<>();
         }
         long count = items.stream()
-                .filter(x -> x.getProduct().getProductId().equals(item.getProduct().getProductId()))
+                .filter(x -> x.getProductId().equals(item.getProduct().getProductId()))
                 .count();
         if(count == 0){
             CartItem cartItem = new CartItem();
             cartItem.setCartId(cart.getCartId());
-            cartItem.setProduct(new ModelMapper().map(item.getProduct(), Product.class));
+            cartItem.setProductId(item.getProduct().getProductId());
             cartItem.setQuantity(item.getQuantity());
 
             items.add(cartItem);
@@ -99,7 +99,7 @@ public class CartService {
 
         } else {
             for(CartItem x: items){
-                if(x.getProduct().getProductId().equals(item.getProduct().getProductId())){
+                if(x.getProductId().equals(item.getProduct().getProductId())){
                     x.setQuantity(x.getQuantity() + item.getQuantity());
                     double price = item.getProduct().getProductPrice() * item.getQuantity();
                     cart.setTotalPrice(cart.getTotalPrice() + price);
@@ -150,7 +150,7 @@ public class CartService {
         CartItem temp = null;
         if(productId == null){
             for(CartItem ci: cartItems){
-                ci.setProduct(null);
+                ci.setProductId(null);
                 cartItemRepository.save(ci);
                 cartItemRepository.delete(ci);
             }
@@ -159,9 +159,9 @@ public class CartService {
 
         } else {
             for(CartItem x: cartItems){
-                if(x.getProduct().getProductId().equals(productId)){
+                if(x.getProductId().equals(productId)){
                     temp = x;
-                    x.setProduct(null);
+                    x.setProductId(null);
                     cartItemRepository.save(x);
                     cartItemRepository.delete(x);
                     break;

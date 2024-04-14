@@ -18,7 +18,15 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "order_sequence",
+            sequenceName = "order_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.AUTO,
+            generator = "order_sequence"
+    )
     private Long orderId;
     private Long customerId;
     private Long sellerId;
@@ -31,12 +39,9 @@ public class Order {
     private Date deliveredAt;
     private String status;
     private String sessionId;
-
+    private Long addressId;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "orderId", referencedColumnName = "orderId")
     private List<OrderItem> items;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "addressId", referencedColumnName = "addressId")
-    private Address shippingAddress;
 }

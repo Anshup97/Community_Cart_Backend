@@ -1,11 +1,11 @@
-package com.communitycart.productservice.service;
+package com.communitycart.reviewservice.service;
 
-import com.communitycart.productservice.client.OrderClient;
-import com.communitycart.productservice.dtos.ReviewDTO;
-import com.communitycart.productservice.entity.Product;
-import com.communitycart.productservice.entity.Review;
-import com.communitycart.productservice.repository.ProductRepository;
-import com.communitycart.productservice.repository.ReviewRepository;
+import com.communitycart.reviewservice.client.OrderClient;
+import com.communitycart.reviewservice.client.ProductClient;
+import com.communitycart.reviewservice.dto.Product;
+import com.communitycart.reviewservice.dto.ReviewDTO;
+import com.communitycart.reviewservice.model.Review;
+import com.communitycart.reviewservice.repository.ReviewRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 public class ReviewService {
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private ReviewRepository reviewRepository;
 
     @Autowired
     private OrderClient orderClient;
+
+    @Autowired
+    private ProductClient productClient;
     /**
      * Returns if a customer can review a product.
      * Returns true if a customer has purchased the product
@@ -38,7 +38,7 @@ public class ReviewService {
 
 
     public void updateRating(Long productId){
-        Product product = productRepository.findProductByProductId(productId);
+        Product product = productClient.getProductById(productId);
         if(product != null){
             List<Review> reviews = reviewRepository.findByProductId(productId);
             if(!reviews.isEmpty()){
@@ -47,11 +47,10 @@ public class ReviewService {
                     ratings += r.getRating();
                 }
                 Double productRating = (double) (ratings / reviews.size());
-                product.setRating(productRating);
+                productClient.updateRating(productId, productRating);
             } else {
-                product.setRating(0D);
+                productClient.updateRating(productId, 0D);
             }
-            productRepository.save(product);
         }
     }
 
@@ -64,7 +63,7 @@ public class ReviewService {
      * @return
      */
     public ReviewDTO postReview(ReviewDTO review) {
-        Product product = productRepository.findProductByProductId(review.getProductId());
+        Product product = productClient.getProductById(review.getProductId());
         if(product == null || !canReview(review.getCustomerId(), review.getProductId())){
             return null;
         }
@@ -90,7 +89,7 @@ public class ReviewService {
      * @return
      */
     public List<ReviewDTO> getReviews(Long productId){
-        Product product = productRepository.findProductByProductId(productId);
+        Product product = productClient.getProductById(productId);
         if(product == null){
             return null;
         }
