@@ -2,12 +2,9 @@ package com.communitycart.productservice.service;
 
 import com.communitycart.productservice.dtos.ProductDTO;
 import com.communitycart.productservice.dtos.ProductOutOfStock;
-import com.communitycart.productservice.dtos.ReviewDTO;
 import com.communitycart.productservice.entity.Product;
-import com.communitycart.productservice.entity.Review;
 import com.communitycart.productservice.entity.Seller;
 import com.communitycart.productservice.repository.ProductRepository;
-import com.communitycart.productservice.repository.ReviewRepository;
 import com.communitycart.productservice.repository.SellerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +28,6 @@ public class ProductService {
     @Autowired
     private SellerRepository sellerRepository;
 
-    @Autowired
-    private ReviewRepository reviewRepository;
 
     /**
      * Get list of all products.
