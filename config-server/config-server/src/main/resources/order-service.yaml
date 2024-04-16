@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/orderdbtest
     username: root
-    password: Ans+pan8955
+    password: ***
     driver-class-name: com.mysql.cj.jdbc.Driver
 #  config:
 server:
