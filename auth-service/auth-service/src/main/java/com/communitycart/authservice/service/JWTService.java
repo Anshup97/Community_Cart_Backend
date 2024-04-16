@@ -1,5 +1,7 @@
 package com.communitycart.authservice.service;
 
+import com.communitycart.authservice.client.CustomerClient;
+import com.communitycart.authservice.client.SellerClient;
 import com.communitycart.authservice.entity.User;
 import com.communitycart.authservice.repository.UsersRepository;
 import io.jsonwebtoken.Claims;
@@ -28,6 +30,12 @@ public class JWTService {
     @Autowired
     private UsersRepository usersRepository;
 
+    @Autowired
+    private SellerClient sellerClient;
+
+    @Autowired
+    private CustomerClient customerClient;
+
     /**
      * Generate JWT token for user after user is authenticated.
      * Add user role, seller Id or customer Id as claims.
@@ -39,6 +47,12 @@ public class JWTService {
         User user = usersRepository.findByEmailId(emailId);
         if(user != null){
             claims.put("role", user.getRole());
+            String role = user.getRole();
+            if(role.equalsIgnoreCase("Seller")) {
+                claims.put("sellerId", sellerClient.getSellerByEmail(user.getEmailId()));
+            } else {
+                claims.put("customerId", customerClient.getCustomerByEmail(user.getEmailId()));
+            }
         }
         return createToken(claims, emailId);
     }

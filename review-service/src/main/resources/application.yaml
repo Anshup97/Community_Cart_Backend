@@ -6,7 +6,7 @@ spring:
       ddl-auto: update
     show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/reviewdb
+    url: jdbc:mysql://localhost:3306/reviewdbtest
     username: root
     password: Ans+pan8955
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,3 +22,8 @@ management:
   tracing:
     sampling:
       probability: 0.1
+#spring:
+#  application:
+#    name: review-service
+#  config:
+#    import: "optional:configserver:http://localhost:8088"

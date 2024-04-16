@@ -3,6 +3,7 @@ package com.communitycart.orderservice.service;
 import com.communitycart.orderservice.client.ProductClient;
 import com.communitycart.orderservice.dtos.CartDTO;
 import com.communitycart.orderservice.dtos.CartItemDTO;
+import com.communitycart.orderservice.dtos.ProductDTO;
 import com.communitycart.orderservice.entity.Cart;
 import com.communitycart.orderservice.entity.CartItem;
 import com.communitycart.orderservice.entity.Customer;
@@ -57,8 +58,22 @@ public class CartService {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCartId(cart.getCartId());
         cartDTO.setCustomerId(customerId);
-        cartDTO.setItems(cart.getItems().stream().map(i -> new ModelMapper().map(i, CartItemDTO.class))
+        List<CartItem> items = cart.getItems();
+        List<CartItemDTO> itemsDTOS = new ArrayList<>();
+        List<ProductDTO> prods = productClient.getProductListById(items.stream()
+                .map(CartItem::getProductId)
                 .collect(Collectors.toList()));
+        for(CartItem ci: items) {
+            CartItemDTO dto = new CartItemDTO();
+            dto.setCartId(ci.getCartId());
+            dto.setCartItemId(ci.getCartItemId());
+            dto.setQuantity(ci.getQuantity());
+            dto.setProduct(prods.stream()
+                    .filter(p -> p.getProductId().equals(ci.getProductId()))
+                    .findFirst().get());
+            itemsDTOS.add(dto);
+        }
+        cartDTO.setItems(itemsDTOS);
         cartDTO.setTotalPrice(cart.getTotalPrice());
         return cartDTO;
     }

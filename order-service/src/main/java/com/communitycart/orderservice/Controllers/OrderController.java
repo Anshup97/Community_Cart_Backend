@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * Order API for managing customer orders.
  */
 @RestController
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RequestMapping("/order")
 public class OrderController {
 

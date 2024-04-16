@@ -12,6 +12,7 @@ import com.communitycart.productservice.service.SellerService;
 import com.communitycart.productservice.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
  * Seller API to manage sellers and their functionalities.
  */
 @RestController
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RequestMapping("/seller")
 public class SellerController {
 
@@ -45,7 +46,6 @@ public class SellerController {
     Add new seller and return the created seller object.
     If there is an existing seller with same email, then return null.
      */
-    @CrossOrigin
     @PostMapping(value = "/addSeller")
     public ResponseEntity<SellerDTO> addSeller(@RequestBody SellerDTO seller)
             throws IOException {
@@ -188,4 +188,8 @@ public class SellerController {
                 location.getElevation()));
     }
 
+    @GetMapping("/getSellerByEmail")
+    public ResponseEntity<?> getSellerByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(userService.findByEmail(email));
+    }
 }

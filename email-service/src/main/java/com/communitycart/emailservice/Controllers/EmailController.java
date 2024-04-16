@@ -10,6 +10,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/email")
+//@CrossOrigin("*")
 public class EmailController {
 
     @Autowired

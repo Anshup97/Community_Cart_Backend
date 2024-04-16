@@ -96,7 +96,7 @@ public class UserService {
         Seller seller = sellerRepository.findByEmail(email);
         if(seller != null){
             String url = fIleStorageService.saveSellerPhoto(profilePhoto, seller.getSellerId());
-            url = "http://172.17.84.49:8080/images/shop/" + url;
+            url = "http://172.17.84.49:8090/images/shop/" + url;
             seller.setShopPhotoUrl(url);
             return new ModelMapper().map(sellerRepository.save(seller), SellerDTO.class);
         }
@@ -104,4 +104,7 @@ public class UserService {
 
     }
 
+    public Long findByEmail(String email) {
+        return sellerRepository.findByEmail(email).getSellerId();
+    }
 }

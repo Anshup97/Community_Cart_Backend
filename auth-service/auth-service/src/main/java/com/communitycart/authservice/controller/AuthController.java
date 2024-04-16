@@ -17,6 +17,7 @@ import org.springframework.web.service.annotation.DeleteExchange;
 
 @RestController
 @RequestMapping("/auth")
+//@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired

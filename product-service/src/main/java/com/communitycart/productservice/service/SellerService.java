@@ -120,7 +120,7 @@ public class SellerService {
         if(!product.isPresent()){
             return "-1";
         }
-        product.get().setProductImageUrl("http://172.17.84.65:8080/images/product/" + photoId);
+        product.get().setProductImageUrl("http://172.17.84.49:8090/images/product/" + photoId);
         productRepository.save(product.get());
         return photoId;
     }

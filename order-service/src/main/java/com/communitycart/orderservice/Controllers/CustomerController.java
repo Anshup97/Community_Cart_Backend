@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Customer API class for managing customers.
  */
 @RestController
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RequestMapping("/customer")
 public class CustomerController {
 
@@ -93,5 +93,10 @@ public class CustomerController {
             }
         }
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping("/getCustomerByEmail")
+    public ResponseEntity<Long> getCustomerByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(userService.getCustomerByEmail(email));
     }
 }

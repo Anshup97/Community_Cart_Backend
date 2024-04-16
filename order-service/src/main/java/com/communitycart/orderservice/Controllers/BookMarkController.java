@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  * Customer can bookmark a product.
  */
 @RestController
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RequestMapping("/bookmark")
 public class BookMarkController {
 

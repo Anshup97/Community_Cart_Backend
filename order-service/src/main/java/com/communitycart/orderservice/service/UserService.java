@@ -104,11 +104,14 @@ public class UserService {
         Customer customer = customerRepository.findCustomerByEmail(email);
         if(customer != null){
             String url = fIleStorageService.saveCustomerPhoto(profilePhoto, customer.getCustomerId());
-            url = "http://172.17.84.65:8080/images/customers/" + url;
+            url = "http://172.17.84.49:8090/images/customers/" + url;
             customer.setCustomerImageUrl(url);
             return new ModelMapper().map(customerRepository.save(customer), CustomerDTO.class);
         }
         return null;
     }
 
+    public Long getCustomerByEmail(String email) {
+        return customerRepository.findCustomerByEmail(email).getCustomerId();
+    }
 }

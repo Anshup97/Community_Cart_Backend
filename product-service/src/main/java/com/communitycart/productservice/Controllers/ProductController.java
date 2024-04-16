@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Product API for managing products.
  */
 @RestController
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RequestMapping("/product")
 public class ProductController {
 

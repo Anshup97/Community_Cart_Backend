@@ -16,7 +16,7 @@ import java.util.List;
  * Manages shopping cart of a customer.
  */
 @RestController
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RequestMapping("/cart")
 public class CartController {
 
